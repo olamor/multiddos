@@ -99,6 +99,9 @@ sudo apt-get install -q -y tmux vnstat torsocks python3 python3-pip
 pip install --upgrade pip
 
 cat > auto_bash.sh << 'EOF'
+if [[ $(echo $(swapon --noheadings --bytes | cut -d " " -f3)) == "" ]]; then
+    sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+fi
 cd ~/multidd/
 git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy.git
 cd mhddos_proxy
