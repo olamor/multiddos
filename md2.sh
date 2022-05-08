@@ -135,9 +135,16 @@ for i in $(cat $file); do
 done
 
 # print total targets, print uniq targets in config file
-echo "total targets: " $(cat $file_tmp | wc -l)
+# echo -e "\ntotal secondary targets: " $(cat $file_tmp | wc -l)
 cat $file_tmp | sort | uniq > $file
-echo "uniq targets: " $(cat $file | sort | uniq | wc -l)
+clear
+sec_targets=$(cat $file | sort | uniq | wc -l)
+main_targets=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -w)
+total_targets=$(expr $sec_targets + $main_targets)
+
+echo -e "\x1b[32m secondary targets" $sec_targets
+echo -e "\x1b[32m main targets" $main_targets
+echo -e "\x1b[32m total" $total_targets
 sleep 5
 
 # Restart attacks and update targets every 30 minutes
