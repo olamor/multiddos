@@ -145,6 +145,9 @@ total_targets=$(expr $sec_targets + $main_targets)
 toilet -t --metal Український
 toilet -t --metal "  жнець"
 toilet -t --metal MULTIDDOS
+# toilet -t --metal Ukrainian
+# toilet -t --metal "  ripper"
+# toilet -t --metal MULTIDDOS
 echo -e "\x1b[32m secondary targets:\x1b[m" $sec_targets
 echo -e "\x1b[32m main targets:\x1b[m" $main_targets
 echo -e "\x1b[32m total:\x1b[m" $total_targets
