@@ -116,7 +116,8 @@ git clone https://github.com/MHProDev/MHDDoS.git
 file="/var/tmp/uaripper.targets"
 file_tmp="/var/tmp/tmp.targets"
 
-echo "" | tee $file $file_tmp
+echo -n > $file
+echo -n > $file_tmp
 
 curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets_parts -o $file_tmp
 
@@ -126,7 +127,7 @@ cat $file_tmp | while read LINE; do
     fi
 done
 
-echo "" > $file_tmp
+echo -n > $file_tmp
 for i in $(cat $file); do
     if [[ $i == "http"* ]] || [[ $i == "tcp://"* ]]; then
         echo $i >> $file_tmp
