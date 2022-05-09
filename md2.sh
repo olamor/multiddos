@@ -14,11 +14,12 @@ db1000n="off"
 uashield="off"
 vnstat="off"
 matrix="off"
-threads="-t 250"
 methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
-
+#threads="-t 250"
+#if [[ $(nproc --all) ]]
+export DISPLAY=:0
 
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
@@ -75,11 +76,9 @@ sleep 1
 echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m"
 echo -e "Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m"
 echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m"
-
 echo -e "\nЗавантаження..."
 sleep 5
 }
-
 export -f prepare_targets_and_banner
 
 prepare_targets_and_banner
@@ -169,7 +168,7 @@ while [ "$1" != "" ]; do
     esac
 done
 
-
+# create small separate script to re-launch only this part of code and not the whole thing
 cat > auto_bash.sh << 'EOF'
 # create swap file if system doesn't have it
 if [[ $(echo $(swapon --noheadings --bytes | cut -d " " -f3)) == "" ]]; then
