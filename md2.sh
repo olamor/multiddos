@@ -17,7 +17,7 @@ typing_on_screen (){
     tput setaf 2 &>/dev/null # green powaaa
     for ((i=0; i<=${#1}; i++)); do
         printf '%s' "${1:$i:1}"
-        sleep 0.$(( (RANDOM % 5) + 1 ))
+        sleep 0.1$(( (RANDOM % 5) + 1 ))
     done
     tput sgr0 2 &>/dev/null
 }
@@ -33,15 +33,6 @@ threads="" #later will check if value still NONE then -t was not passed in comma
 #rpc="--rpc 2000"
 #export debug="--debug"
 
-typing_on_screen (){
-    tput setaf 2 &>/dev/null # green powaaa
-    for ((i=0; i<=${#1}; i++)); do
-        printf '%s' "${1:$i:1}"
-        sleep 0.$(( (RANDOM % 5) + 1 ))
-    done
-    tput sgr0 2 &>/dev/null
-}
-export -f typing_on_screen
 
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
@@ -94,12 +85,12 @@ toilet -t --metal " MULTIDDOS"
 typing_on_screen 'Шукаю завдання...'
 
 sleep 1
-echo -e "\n"
-echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m"
-echo -e "Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m"
-echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m"
+echo -e "\n" && sleep 0.1
+echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m" && sleep 0.1
+echo -e "Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m" && sleep 0.1
+echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m" && sleep 0.1
 
-echo -e "\nКількість потоків:" $threads
+echo -e "\nКількість потоків:" "\x1b[32m $(echo $threads | cut -d " " -f2)\x1b[m" && sleep 0.1
 echo -e "\nЗавантаження..."
 sleep 5
 }
@@ -111,10 +102,13 @@ if [ ! -f "/usr/local/bin/gotop" ]; then
     sudo dpkg -i gotop.deb
 fi
 
-tmux kill-session -t multiddos; sudo pkill node; sudo pkill shield
+tmux kill-session -t multiddos > /dev/null 2>&1
+sudo pkill node > /dev/null 2>&1
+sudo pkill shield > /dev/null 2>&1
 # tmux mouse support
 grep -qxF 'set -g mouse on' ~/.tmux.conf || echo 'set -g mouse on' >> ~/.tmux.conf
-tmux source-file ~/.tmux.conf
+tmux source-file ~/.tmux.conf > /dev/null 2>&1
+
 
 if [[ $gotop == "on" ]]; then
     tmux new-session -s multiddos -d 'gotop -asc solarized'
@@ -189,15 +183,15 @@ done
 #threads = number of cores * 250
 if [[ $threads == "" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads=$(expr $(nproc --all) "*" 50)
+        threads="-t $(expr $(nproc --all) "*" 250)"
     elif [[ $(nproc --all) -gt 8 ]]; then
         threads="-t 2000"
     else
         threads="-t 500" #safe value in case something go wrong
     fi
-export $threads
+export threads
 fi
-
+sleep 2
 prepare_targets_and_banner
 clear
 
