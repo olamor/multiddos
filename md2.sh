@@ -19,8 +19,15 @@ methods="--http-methods GET STRESS"
 #export debug="--debug"
 #threads="-t 250"
 #if [[ $(nproc --all) ]]
-export DISPLAY=:0.0
-export XAUTHORITY="$HOME/.Xauthority"
+
+typing_on_screen (){
+    tput setaf 2 &>/dev/null # green powaaa
+    for ((i=0; i<=${#1}; i++)); do
+        printf '%s' "${1:$i:1}"
+        sleep 0.$(( (RANDOM % 5) + 1 ))
+    done
+    tput sgr0 2 &>/dev/null
+}
 
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
@@ -69,9 +76,12 @@ clear
 toilet -t --metal Український
 toilet -t --metal "   жнець"
 toilet -t --metal " MULTIDDOS"
-xdotool type --delay 100 "Шукаю завдання..."
-sleep 1
-xdotool type --delay 100 " знайшов!"
+
+typing_on_screen 'Шукаю завдання...'
+
+# xdotool type --delay 100 "Шукаю завдання..."
+# sleep 1
+# xdotool type --delay 100 " знайшов!"
 echo -e "\n"
 sleep 1
 echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m"
