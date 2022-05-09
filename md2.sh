@@ -19,7 +19,8 @@ methods="--http-methods GET STRESS"
 #export debug="--debug"
 #threads="-t 250"
 #if [[ $(nproc --all) ]]
-export DISPLAY=:0.0 && xdotool key a
+export DISPLAY=:0.0
+export XAUTHORITY="$HOME/.Xauthority"
 
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
