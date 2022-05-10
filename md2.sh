@@ -56,10 +56,10 @@ done
 sed -i '/^$/d' $all_targets
 
 # put every line except last line in file $sec_targets
-head -n -2 $all_targets > $sec_targets
+head -n -1 $all_targets > $sec_targets
 
 # put only last line in file $main_targets
-tail -n 2 $all_targets > $main_targets
+tail -n 1 $all_targets > $main_targets
 
 # put all addresses found in $sec_targets in a file on a new line
 for i in $(cat $sec_targets); do
