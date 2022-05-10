@@ -24,6 +24,10 @@ typing_on_screen (){
 export -f typing_on_screen
 
 echo $docker_mode
+echo "gotop" $gotop
+echo "vnstat" $vnstat
+echo "db1000n" $db1000n
+echo "uashield" $uashield
 sleep 3
 
 #if launched in docker than variables saved in docker md.sh will be used
