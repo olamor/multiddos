@@ -1,13 +1,6 @@
 #!/bin/bash
 # curl -L tiny.one/multiddos | bash && tmux a
 
-echo  $docker_mode
-echo  $gotop
-echo  $vnstat
-echo  $db1000n
-echo  $uashield
-sleep 3
-
 clear && echo -e "Loading...\n"
 
 sudo apt-get update -q -y #>/dev/null 2>&1
