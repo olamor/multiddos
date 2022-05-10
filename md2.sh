@@ -1,6 +1,13 @@
 #!/bin/bash
 # curl -L tiny.one/multiddos | bash && tmux a
 
+echo "docker" $docker_mode
+echo "gotop" $gotop
+echo "vnstat" $vnstat
+echo "db1000n" $db1000n
+echo "uashield" $uashield
+sleep 3
+
 clear && echo -e "Loading...\n"
 
 sudo apt-get update -q -y #>/dev/null 2>&1
@@ -23,12 +30,7 @@ typing_on_screen (){
 }
 export -f typing_on_screen
 
-echo $docker_mode
-echo "gotop" $gotop
-echo "vnstat" $vnstat
-echo "db1000n" $db1000n
-echo "uashield" $uashield
-sleep 3
+
 
 #if launched in docker than variables saved in docker md.sh will be used
 if [[ docker_mode != "true" ]]; then
