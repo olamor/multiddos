@@ -190,8 +190,8 @@ if [[ $t_set_manual != "on" ]]; then
     else
         threads="-t 500" #safe value in case something go wrong
     fi
-export threads
 echo $threads
+export threads
 fi
 
 prepare_targets_and_banner
