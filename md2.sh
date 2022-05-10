@@ -23,6 +23,9 @@ typing_on_screen (){
 }
 export -f typing_on_screen
 
+echo $docker_mode
+sleep 3
+
 #if launched in docker than variables saved in docker md.sh will be used
 if [[ docker_mode != "true" ]]; then
     gotop="on"
