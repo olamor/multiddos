@@ -103,6 +103,7 @@ if [ ! -f "/usr/local/bin/gotop" ]; then
     sudo dpkg -i gotop.deb
 fi
 
+# kill previous sessions or processes in case they wasn't 
 tmux kill-session -t multiddos > /dev/null 2>&1
 sudo pkill node > /dev/null 2>&1
 sudo pkill shield > /dev/null 2>&1
@@ -171,9 +172,9 @@ while [ "$1" != "" ]; do
     case $1 in
         +d | --db1000n )   db1000n="on"; shift ;;
         +u | --uashield )   uashield="on"; shift ;;
-        -t | --threads )   export threads="-t $2"; shift 2 ;;
+        -t | --threads )   export threads="-t $2"; t_set_manual="on"; shift 2 ;;
         +m | --matrix )   matrix="on"; shift ;;
-        -g | --gotop ) gotop="off"; db1000n="on"; shift ;;
+        -g | --gotop ) gotop="off"; db1000n="off"; shift ;;
         +v | --vnstat ) vnstat="on"; shift ;;
         -h | --help )    usage;   exit ;;
         *  )   usage;   exit ;;
@@ -182,7 +183,7 @@ done
 
 #assign auto calculated threads value if it wasn't assidgned as -t in command line
 #threads = number of cores * 250
-if [[ $threads == "" ]]; then 
+if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
         threads="-t $(expr $(nproc --all) "*" 250)"
     elif [[ $(nproc --all) -gt 8 ]]; then
@@ -192,7 +193,7 @@ if [[ $threads == "" ]]; then
     fi
 export threads
 fi
-sleep 2
+
 prepare_targets_and_banner
 clear
 
