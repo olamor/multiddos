@@ -14,7 +14,7 @@ mkdir multidd
 cd multidd
 
 typing_on_screen (){
-    tput setaf 2 &>/dev/null # green powaaa
+    tput setaf 2 &>/dev/null # green
     for ((i=0; i<=${#1}; i++)); do
         printf '%s' "${1:$i:1}"
         sleep 0.08$(( (RANDOM % 5) + 1 ))
@@ -23,11 +23,15 @@ typing_on_screen (){
 }
 export -f typing_on_screen
 
-gotop="on"
-db1000n="off"
-uashield="off"
-vnstat="off"
-matrix="off"
+#if launched in docker than variables saved in docker md.sh will be used
+if [[ docker_mode != "true" ]]; then
+    gotop="on"
+    db1000n="off"
+    uashield="off"
+    vnstat="off"
+    matrix="off"
+fi
+
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
