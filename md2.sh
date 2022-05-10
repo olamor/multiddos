@@ -171,7 +171,7 @@ while [ "$1" != "" ]; do
     case $1 in
         +d | --db1000n )   db1000n="on"; shift ;;
         +u | --uashield )   uashield="on"; shift ;;
-        -t | --threads )   export threads="-t $2"; t_set_manual="on"; shift 2 ;;
+        -t | --threads )   export -p threads="-t $2"; t_set_manual="on"; shift 2 ;;
         +m | --matrix )   matrix="on"; shift ;;
         -g | --gotop ) gotop="off"; db1000n="off"; shift ;;
         +v | --vnstat ) vnstat="on"; shift ;;
@@ -190,7 +190,7 @@ if [[ $t_set_manual != "on" ]]; then
     else
         threads="-t 500" #safe value in case something go wrong
     fi
-export threads
+export -p threads
 fi
 
 prepare_targets_and_banner
