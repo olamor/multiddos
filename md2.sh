@@ -222,7 +222,7 @@ sleep 2
         python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $methods&
         sleep 15 # to decrease load on cpu during simultaneous start
         python3 ~/multidd/mhddos_proxy/runner.py -c $sec_targets $threads $methods&
-sleep 30
+sleep 30m
 prepare_targets_and_banner
 clear
 done
