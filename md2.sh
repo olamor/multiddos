@@ -33,7 +33,7 @@ export -f typing_on_screen
 
 
 #if launched in docker than variables saved in docker md.sh will be used
-if [[ docker_mode != "true" ]]; then
+if [[ $docker_mode != "true" ]]; then
     gotop="on"
     db1000n="off"
     uashield="off"
