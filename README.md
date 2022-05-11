@@ -43,6 +43,8 @@ docker run -it --rm --log-driver none --name multidd --pull always karboduck/mul
 
 * Если вам нужно запустить несколько копий multiddos. <details> Используйте разные имена (--name multidd1, --name multidd2 и т.д.), либо не используйте имена вообще
 
+* Запуск docker c ключами. <details> Docker версия поддерживает те же ключи, что и bash версия. Прописывайте их точно так же в конце команды. `docker run -it --rm --log-driver none --name multidd --pull always karboduck/multidd -t 500 +v` Подробнее про ключи читайте ниже в разделе **Выбор конфигурации**.
+
 ### **Остановка**
 1. Нажать в окне несколько раз подряд `Ctrl + C`
 2. В другом терминале запустить команду `docker stop multidd`
