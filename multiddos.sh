@@ -46,7 +46,7 @@ export sec_targets_tmp="/var/tmp/secondary_tmp.uaripper"
 rm -f /var/tmp/*uaripper #remove previous copies
 
 # read targets from github and put them in file $all_targets. Commented and empty lines excluded.
-echo "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets_parts)" | while read LINE; do
+echo "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets)" | while read LINE; do
     if [[ "$LINE" != "#"* ]] && [ "$LINE" != "" ] ; then
         echo $LINE >> $all_targets
     fi
