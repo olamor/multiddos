@@ -131,7 +131,7 @@ fi
 
 if [[ $proxy_finder == "on" ]]; then
 sleep 0.2
-tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; python3 ~/multidd/proxy_finder/finder.py --threads 2500'
+tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; python3 ~/multidd/proxy_finder/finder.py --threads 5000'
 fi
 
 #tmux -2 attach-session -d
@@ -168,7 +168,7 @@ done
 #threads = number of cores * 250
 if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 100)"
+        threads="-t $(expr $(nproc --all) "*" 128)"
     elif [[ $(nproc --all) -gt 8 ]]; then
         threads="-t 2000"
     else
