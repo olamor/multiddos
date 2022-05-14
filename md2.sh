@@ -127,7 +127,7 @@ if [[ $uashield == "on" ]]; then
 sleep 0.2
 tmux split-window -v 'curl -L https://github.com/opengs/uashield/releases/download/v1.0.3/shield-1.0.3.tar.gz -o shield.tar.gz && tar -xzf shield.tar.gz --strip 1 && ./shield'
 fi
-=
+
 if [[ $proxy_finder == "on" ]]; then
 sleep 0.2
 tmux split-window -v -p 10 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "Searching for new proxies... Proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
