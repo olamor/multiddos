@@ -163,14 +163,14 @@ while [ "$1" != "" ]; do
 done
 
 #assign auto calculated threads value if it wasn't assidgned as -t in command line
-#threads = number of cores * $threads_per_core
+#threads = number of cores * 150
 if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 200)"
+        threads="-t $(expr $(nproc --all) "*" 150)"
     elif [[ $(nproc --all) -gt 8 ]]; then
-        threads="-t 1600"
+        threads="-t 1500"
     else
-        threads="-t 400" #safe value in case something go wrong
+        threads="-t 200" #safe value in case something go wrong
     fi
 export threads
 fi
