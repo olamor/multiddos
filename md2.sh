@@ -35,6 +35,7 @@ fi
 
 export proxy_threads="2000"
 export methods="--http-methods GET STRESS"
+threads_per_core
 #rpc="--rpc 2000"
 #export debug="--debug"
 
@@ -66,7 +67,7 @@ done
 # find only uniq targets, randomize order and save them in $targets_uniq
 cat $targets_line_by_line | sort | uniq | sort -R > $targets_uniq
 
-#split targets in N files
+#split targets by line in N files
 cd /var/tmp/
 split -n l/4 --additional-suffix=.uaripper $targets_uniq
 cd -
@@ -101,10 +102,11 @@ grep -qxF 'set -g mouse on' ~/.tmux.conf || echo 'set -g mouse on' >> ~/.tmux.co
 tmux source-file ~/.tmux.conf > /dev/null 2>&1
 
 if [[ $gotop == "on" ]]; then
-    if [ ! -f "/usr/local/bin/gotop" ]; then
-        curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb
-        sudo dpkg -i gotop.deb
-    fi
+    # if [ ! -f "/usr/local/bin/gotop" ]; then
+    #     curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb
+    #     sudo dpkg -i gotop.deb
+    # fi
+    [[ ! -f "/usr/local/bin/gotop" ]] && {curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb; sudo dpkg -i gotop.deb}
     tmux new-session -s multiddos -d 'gotop -sc solarized'
     sleep 0.2
     tmux split-window -h -p 66 'bash auto_bash.sh'
@@ -166,10 +168,10 @@ while [ "$1" != "" ]; do
 done
 
 #assign auto calculated threads value if it wasn't assidgned as -t in command line
-#threads = number of cores * 200
+#threads = number of cores * $threads_per_core
 if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 200)"
+        threads="-t $(expr $(nproc --all) "*" 150)"
     elif [[ $(nproc --all) -gt 8 ]]; then
         threads="-t 1600"
     else
