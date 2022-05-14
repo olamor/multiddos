@@ -35,7 +35,6 @@ fi
 
 export proxy_threads="2000"
 export methods="--http-methods GET STRESS"
-threads_per_core
 #rpc="--rpc 2000"
 #export debug="--debug"
 
