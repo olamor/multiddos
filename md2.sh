@@ -130,7 +130,7 @@ fi
 
 if [[ $proxy_finder == "on" ]]; then
 sleep 0.2
-tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
+tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "Searching for new proxies... Proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
 fi
 
 #tmux -2 attach-session -d
