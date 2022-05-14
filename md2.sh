@@ -171,7 +171,7 @@ done
 #threads = number of cores * $threads_per_core
 if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 150)"
+        threads="-t $(expr $(nproc --all) "*" 128)"
     elif [[ $(nproc --all) -gt 8 ]]; then
         threads="-t 1600"
     else
