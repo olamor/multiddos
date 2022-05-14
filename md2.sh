@@ -99,7 +99,7 @@ grep -qxF 'set -g mouse on' ~/.tmux.conf || echo 'set -g mouse on' >> ~/.tmux.co
 tmux source-file ~/.tmux.conf > /dev/null 2>&1
 
 if [[ $gotop == "on" ]]; then
-    [ ! -f "/usr/local/bin/gotop" ] && curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb; sudo dpkg -i gotop.deb
+    [[ ! -f "/usr/local/bin/gotop" ]] && curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb; sudo dpkg -i gotop.deb
     tmux new-session -s multiddos -d 'gotop -sc solarized'
     sleep 0.2
     tmux split-window -h -p 66 'bash auto_bash.sh'
