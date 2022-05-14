@@ -78,12 +78,10 @@ toilet -t --metal "Український" && sleep 0.1
 toilet -t --metal "   жнець" && sleep 0.1
 toilet -t --metal " MULTIDDOS" && sleep 0.1
 typing_on_screen 'Шукаю завдання...'
-
 sleep 0.5
 echo -e "\n" && sleep 0.1
 echo -e "Total targets found:" "\x1b[32m $(cat $targets_line_by_line | wc -l)\x1b[m" && sleep 0.1
 echo -e "Uniq targets:" "\x1b[32m $(cat $targets_uniq | wc -l)\x1b[m" && sleep 0.1
-
 echo -e "\nКількість потоків:" "\x1b[32m $(echo $threads | cut -d " " -f2)\x1b[m" && sleep 0.1
 echo -e "\nЗавантаження..."
 sleep 3
@@ -92,7 +90,6 @@ clear
 export -f prepare_targets_and_banner
 
 launch () {
-
 # kill previous sessions or processes in case they still in memory
 tmux kill-session -t multiddos > /dev/null 2>&1
 sudo pkill node > /dev/null 2>&1
@@ -102,11 +99,10 @@ grep -qxF 'set -g mouse on' ~/.tmux.conf || echo 'set -g mouse on' >> ~/.tmux.co
 tmux source-file ~/.tmux.conf > /dev/null 2>&1
 
 if [[ $gotop == "on" ]]; then
-    # if [ ! -f "/usr/local/bin/gotop" ]; then
-    #     curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb
-    #     sudo dpkg -i gotop.deb
-    # fi
-    [[ ! -f "/usr/local/bin/gotop" ]] && {curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb; sudo dpkg -i gotop.deb}
+    if [ ! -f "/usr/local/bin/gotop" ]; then
+        curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb
+        sudo dpkg -i gotop.deb
+    fi
     tmux new-session -s multiddos -d 'gotop -sc solarized'
     sleep 0.2
     tmux split-window -h -p 66 'bash auto_bash.sh'
