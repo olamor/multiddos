@@ -33,6 +33,7 @@ if [[ $docker_mode != "true" ]]; then
     proxy_finder="on"
 fi
 
+proxy_threads="2000"
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
@@ -131,8 +132,7 @@ fi
 
 if [[ $proxy_finder == "on" ]]; then
 sleep 0.2
-tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; python3 ~/multidd/proxy_finder/finder.py --threads 2500'
-echo "--threads 2500"
+tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "proxy threads: $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
 fi
 
 #tmux -2 attach-session -d
@@ -166,14 +166,14 @@ while [ "$1" != "" ]; do
 done
 
 #assign auto calculated threads value if it wasn't assidgned as -t in command line
-#threads = number of cores * 250
+#threads = number of cores * 200
 if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 128)"
+        threads="-t $(expr $(nproc --all) "*" 200)"
     elif [[ $(nproc --all) -gt 8 ]]; then
-        threads="-t 2000"
+        threads="-t 1600"
     else
-        threads="-t 500" #safe value in case something go wrong
+        threads="-t 400" #safe value in case something go wrong
     fi
 export threads
 fi
