@@ -69,7 +69,7 @@ cat $targets_line_by_line | sort | uniq | sort -R > $targets_uniq
 
 #split targets by line in N files
 cd /var/tmp/
-split -n l/2 --additional-suffix=.uaripper $targets_uniq
+split -n l/4 --additional-suffix=.uaripper $targets_uniq
 cd -
 
 # Print greetings and number of targets (secondary, main, total)
@@ -130,7 +130,7 @@ fi
 =
 if [[ $proxy_finder == "on" ]]; then
 sleep 0.2
-tmux split-window -v -p 20 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "Searching for new proxies... Proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
+tmux split-window -v -p 10 'rm -rf ~/multidd/proxy_finder; git clone https://github.com/porthole-ascend-cinnamon/proxy_finder ~/multidd/proxy_finder; cd ~/multidd/proxy_finder; python3 -m pip install -r requirements.txt; clear; echo "Searching for new proxies... Proxy threads:" $proxy_threads; python3 ~/multidd/proxy_finder/finder.py --threads $proxy_threads'
 fi
 
 #tmux -2 attach-session -d
@@ -167,7 +167,7 @@ done
 #threads = number of cores * $threads_per_core
 if [[ $t_set_manual != "on" ]]; then 
     if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 128)"
+        threads="-t $(expr $(nproc --all) "*" 200)"
     elif [[ $(nproc --all) -gt 8 ]]; then
         threads="-t 1600"
     else
