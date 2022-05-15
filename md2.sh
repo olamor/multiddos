@@ -33,7 +33,10 @@ if [[ $docker_mode != "true" ]]; then
     proxy_finder="on"
 fi
 
-export proxy_threads="4000"
+if [[ $t_set_manual != "on" ]]; then
+    thread="-t 2000"
+fi
+export proxy_threads="5000"
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
@@ -68,7 +71,7 @@ cat $targets_line_by_line | sort | uniq | sort -R > $targets_uniq
 
 #split targets by line in N files
 cd /var/tmp/
-split -n l/4 --additional-suffix=.uaripper $targets_uniq
+split -n l/2 --additional-suffix=.uaripper $targets_uniq
 cd -
 
 # Print greetings and number of targets (secondary, main, total)
@@ -164,16 +167,16 @@ done
 
 #assign auto calculated threads value if it wasn't assidgned as -t in command line
 #threads = number of cores * 150
-if [[ $t_set_manual != "on" ]]; then 
-    if [[ $(nproc --all) -le 8 ]]; then
-        threads="-t $(expr $(nproc --all) "*" 400)"
-    elif [[ $(nproc --all) -gt 8 ]]; then
-        threads="-t 1200"
-    else
-        threads="-t 200" #safe value in case something go wrong
-    fi
-export threads
-fi
+# if [[ $t_set_manual != "on" ]]; then 
+#     if [[ $(nproc --all) -le 8 ]]; then
+#         threads="-t $(expr $(nproc --all) "*" 400)"
+#     elif [[ $(nproc --all) -gt 8 ]]; then
+#         threads="-t 1200"
+#     else
+#         threads="-t 200" #safe value in case something go wrong
+#     fi
+# export threads
+# fi
 
 prepare_targets_and_banner
 clear
