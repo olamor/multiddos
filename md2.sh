@@ -33,7 +33,7 @@ if [[ $docker_mode != "true" ]]; then
     proxy_finder="on"
 fi
 
-export proxy_threads="2000"
+export proxy_threads="4000"
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
