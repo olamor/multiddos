@@ -34,9 +34,9 @@ if [[ $docker_mode != "true" ]]; then
 fi
 
 if [[ $t_set_manual != "on" ]]; then
-    export threads="-t 2500"
+    export threads="-t 3000"
 fi
-export proxy_threads="2000"
+export proxy_threads="1000"
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
