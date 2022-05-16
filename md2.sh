@@ -33,10 +33,10 @@ if [[ $docker_mode != "true" ]]; then
     proxy_finder="on"
 fi
 
-# if [[ $t_set_manual != "on" ]]; then
-#     export threads="-t 500"
-# fi
-export proxy_threads="1000"
+if [[ $t_set_manual != "on" ]]; then
+    export threads="-t 500"
+fi
+export proxy_threads="2000"
 export methods="--http-methods GET STRESS"
 #rpc="--rpc 2000"
 #export debug="--debug"
