@@ -145,13 +145,14 @@ fi
 usage () {
 cat << EOF
 usage: bash multiddos.sh [+d|+u|-t|+m|-h]
-                          -g | --gotop        - disable gotop
-                          -p                  - threads for proxy finder; -p 0 to disable proxy finder
-                          +d | --db1000n      - enable db1000n
-                          +u | --uashield     - enable uashield
-                          +v | --vnstat       - enable vnstat -l (traffic monitoring)
-                          -t | --threads      - threads
-                          -h | --help         - brings up this menu
+                    -g | --gotop            - disable gotop
+                    -p | --proxy-threads    - threads for proxy finder
+                    -p0| --no-proxy-finder  - disable proxy finder
+                    +d | --db1000n          - enable db1000n
+                    +u | --uashield         - enable uashield
+                    +v | --vnstat           - enable vnstat -l (traffic stat)
+                    -t | --threads          - threads
+                    -h | --help             - brings up this menu
 EOF
 exit
 }
