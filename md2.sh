@@ -198,7 +198,7 @@ git clone https://github.com/porthole-ascend-cinnamon/mhddos_proxy.git
 cd mhddos_proxy
 python3 -m pip install -r requirements.txt
 git clone https://github.com/MHProDev/MHDDoS.git
-pip uninstall uvloop
+pip uninstall -y uvloop
 
 # Restart attacks and update targets every 30 minutes
 while true; do
