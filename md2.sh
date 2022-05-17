@@ -146,6 +146,7 @@ usage () {
 cat << EOF
 usage: bash multiddos.sh [+d|+u|-t|+m|-h]
                           -g | --gotop        - disable gotop
+                          -p                  - threads for proxy finder; -p 0 to disable proxy finder
                           +d | --db1000n      - enable db1000n
                           +u | --uashield     - enable uashield
                           +v | --vnstat       - enable vnstat -l (traffic monitoring)
@@ -164,6 +165,8 @@ while [ "$1" != "" ]; do
         -t | --threads )   export threads="-t $2"; t_set_manual="on"; shift 2 ;;
         -g | --gotop ) gotop="off"; db1000n="off"; shift ;;
         +v | --vnstat ) vnstat="on"; shift ;;
+        --no-proxy-finder ) export proxy_finder="off"; shift ;;
+        -p | --proxy-threads) export proxy_threads="$2"; shift 2 ;;
         -h | --help )    usage;   exit ;;
         *  )   usage;   exit ;;
     esac
