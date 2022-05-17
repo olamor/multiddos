@@ -166,7 +166,7 @@ while [ "$1" != "" ]; do
         -t | --threads )   export threads="-t $2"; t_set_manual="on"; shift 2 ;;
         -g | --gotop ) gotop="off"; db1000n="off"; shift ;;
         +v | --vnstat ) vnstat="on"; shift ;;
-        --no-proxy-finder ) export proxy_finder="off"; shift ;;
+        -p0| --no-proxy-finder ) export proxy_finder="off"; shift ;;
         -p | --proxy-threads) export proxy_threads="$2"; shift 2 ;;
         -h | --help )    usage;   exit ;;
         *  )   usage;   exit ;;
