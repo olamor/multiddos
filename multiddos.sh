@@ -36,10 +36,12 @@ fi
 if [[ $t_set_manual != "on" ]]; then
     export threads="-t 250"
 fi
-export proxy_threads="1000"
+
+if [[ $t_proxy_manual != "on" ]]; then
+    export proxy_threads="1000"
+fi
+
 export methods="--http-methods GET STRESS"
-#rpc="--rpc 2000"
-#export debug="--debug"
 
 ### prepare target files (main and secondary)
 prepare_targets_and_banner () {
